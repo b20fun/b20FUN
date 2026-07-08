@@ -22,13 +22,18 @@ export function Navbar() {
       <div className="p-5 flex-shrink-0" style={{ borderBottom: '1px solid var(--border)' }}>
         <Link href="/" className="flex items-center gap-3">
           <div 
-            className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md"
-            style={{ background: 'var(--ice-deep)' }}
+            className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0"
+            style={{ background: '#fff' }}
           >
-            B20
+            <img 
+              src="/b20 logo.png" 
+              alt="B20 FUN Logo" 
+              className="w-full h-full object-contain"
+              style={{ padding: '2px' }}
+            />
           </div>
           <div>
-            <div className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>B20TOKEN</div>
+            <div className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>B20 FUN</div>
             <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>Launchpad & DEX</div>
           </div>
         </Link>

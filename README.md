@@ -1,6 +1,6 @@
-# B20TOKEN - Base B20 Token Launchpad & DEX Platform
+# B20 FUN - Base B20 Token Launchpad & DEX Platform
 
-Base ağı üzerinde B20 token standardı için kapsamlı bir platform:
+Base network üzerinde B20 token standardı için kapsamlı bir platform:
 
 - 🚀 **Launchpad** - Kod yazmadan B20 token oluşturma
 - 🔄 **Swap** - DEX Aggregator (Uniswap V3 + Aerodrome)

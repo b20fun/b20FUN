@@ -12,7 +12,7 @@ export default function Home() {
             <span className="font-semibold text-xs" style={{ color: 'var(--ice-deep)' }}>⚡ Base Mainnet</span>
           </div>
           <h1 className="text-4xl font-bold mb-4" style={{ color: 'var(--ice-deep)' }}>
-            B20 Token Platform
+            B20 FUN Platform
           </h1>
           <p className="text-lg mb-6 max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>
             Create B20 tokens without code on Base network, swap at the best price, and explore the ecosystem
