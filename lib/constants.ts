@@ -1,9 +1,9 @@
-// B20 Factory ve Precompile Adresleri (Base - tüm network'lerde aynı)
+// B20 Factory and Precompile Addresses (Base - same on all networks)
 export const B20_FACTORY_ADDRESS = '0xB20f000000000000000000000000000000000000' as const;
 export const ACTIVATION_REGISTRY_ADDRESS = '0x8453000000000000000000000000000000000001' as const;
 export const POLICY_REGISTRY_ADDRESS = '0x8453000000000000000000000000000000000002' as const;
 
-// Uniswap V3 Adresleri (Base Mainnet & Sepolia - aynı adresler)
+// Uniswap V3 Addresses (Base Mainnet & Sepolia - same addresses)
 export const UNISWAP_V3 = {
   FACTORY: '0x4752ba5DBc23f44D87826276BF6Fd6b1C372aD24',
   QUOTER_V2: '0xC5290058841028F1614F3A6F0F5816cAd0df5E27',
@@ -12,7 +12,7 @@ export const UNISWAP_V3 = {
   WETH: '0x4200000000000000000000000000000000000006',
 } as const;
 
-// Aerodrome Adresleri (Base Mainnet - Base Sepolia'da YOK)
+// Aerodrome Addresses (Base Mainnet - NOT on Base Sepolia)
 export const AERODROME = {
   ROUTER: '0xcF77a3Ba9A5CA399B7c97c74d54e5b1Beb874E43',
   POOL_FACTORY: '0x420DD381b31aEf6683db6B902084cB0FFECe40Da',
@@ -20,7 +20,7 @@ export const AERODROME = {
   SLIPSTREAM_CL_FACTORY: '0x5e7BB104d84c7CB9B682AaC2F3d509f5F406809A',
 } as const;
 
-// Platform Ayarları
+// Platform Settings
 export const PLATFORM = {
   LAUNCH_FEE: '0.002', // ETH
   FEE_RECIPIENT: process.env.NEXT_PUBLIC_FEE_RECIPIENT_ADDRESS!,
@@ -32,7 +32,7 @@ export enum B20Variant {
   STABLECOIN = 1,
 }
 
-// B20 Roller
+// B20 Roles
 export const B20_ROLES = {
   DEFAULT_ADMIN_ROLE: '0x0000000000000000000000000000000000000000000000000000000000000000',
   MINT_ROLE: '0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6',
