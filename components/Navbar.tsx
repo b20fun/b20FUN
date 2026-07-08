@@ -7,6 +7,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 const navigation = [
   { name: '🚀 Launchpad', href: '/launchpad' },
   { name: '🔄 Swap', href: '/swap' },
+  { name: '🔍 Token Checker', href: '/token-checker' },
   { name: '📊 Explore', href: '/explore' },
   { name: '💧 Liquidity', href: '/liquidity' },
   { name: '📈 Portfolio', href: '/portfolio' },
