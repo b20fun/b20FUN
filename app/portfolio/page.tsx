@@ -233,8 +233,7 @@ export default function PortfolioPage() {
         b20Tokens.length === 0 ? (
           <div className="text-center py-8 rounded-xl" style={{ background: 'var(--ice-pale)' }}><div className="text-3xl mb-3">📦</div>
           <h3 className="font-semibold text-base mb-2" style={{ color: 'var(--text-primary)' }}>No B20 token balance</h3>
-          <div className="flex gap-2 justify-center mt-3"><a href="/swap" className="px-4 py-2 rounded-lg text-sm font-semibold text-white" style={{ background: 'var(--ice-primary)' }}>Swap</a>
-          <a href="/launchpad" className="px-4 py-2 rounded-lg text-sm font-semibold" style={{ background: 'var(--bg-base)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}>Create Token</a></div></div>
+          <div className="flex gap-2 justify-center mt-3"><a href="/swap" className="px-4 py-2 rounded-lg text-sm font-semibold text-white" style={{ background: 'var(--ice-primary)' }}>Swap</a></div></div>
         ) : (
           <div className="space-y-2">{b20Tokens.map((t: any) => (
             <div key={t.id} className="rounded-lg p-3" style={{ background: 'var(--bg-base)', border: '1px solid var(--border)' }}>
@@ -259,8 +258,7 @@ export default function PortfolioPage() {
       {!loading && tab === 'created' && (
         createdTokens.length === 0 ? (
           <div className="text-center py-8 rounded-xl" style={{ background: 'var(--ice-pale)' }}><div className="text-3xl mb-2">🚀</div>
-          <p className="font-semibold text-sm mb-1" style={{ color: 'var(--text-primary)' }}>No tokens created</p>
-          <a href="/launchpad" className="inline-block mt-3 px-4 py-2 rounded-lg text-sm font-semibold text-white" style={{ background: 'var(--ice-primary)' }}>Create Token</a></div>
+          <p className="font-semibold text-sm mb-1" style={{ color: 'var(--text-primary)' }}>No tokens created</p></div>
         ) : (
           <div className="space-y-2">{createdTokens.map((t: any) => (
             <div key={t.id} className="rounded-lg p-3" style={{ background: 'var(--bg-base)', border: '1px solid var(--border)' }}>

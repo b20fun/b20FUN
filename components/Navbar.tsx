@@ -5,10 +5,8 @@ import { usePathname } from 'next/navigation';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const navigation = [
-  { name: '🚀 Launchpad', href: '/launchpad' },
   { name: '🔄 Swap', href: '/swap' },
   { name: '📊 Explore', href: '/explore' },
-  { name: '💧 Liquidity', href: '/liquidity' },
   { name: '📈 Portfolio', href: '/portfolio' },
   { name: '🔌 API', href: '/api-docs' },
 ];
@@ -34,7 +32,7 @@ export function Navbar() {
           </div>
           <div>
             <div className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>B20 FUN</div>
-            <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>Launchpad & DEX</div>
+            <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>DEX Aggregator</div>
           </div>
         </Link>
       </div>

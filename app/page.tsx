@@ -15,15 +15,15 @@ export default function Home() {
             B20 FUN Platform
           </h1>
           <p className="text-lg mb-6 max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>
-            Create B20 tokens without code on Base network, swap at the best price, and explore the ecosystem
+            Trade tokens at the best price across Base network DEXs
           </p>
           <div className="flex gap-3 justify-center">
             <Link
-              href="/launchpad"
+              href="/swap"
               className="px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl hover-ice-primary"
               style={{ background: 'var(--ice-primary)' }}
             >
-              🚀 Create Token
+              🔄 Start Swapping
             </Link>
             <Link
               href="/explore"
@@ -36,28 +36,7 @@ export default function Home() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-3 gap-4 mb-12">
-          <Link
-            href="/launchpad"
-            className="group p-6 rounded-xl transition-all hover:shadow-xl"
-            style={{ 
-              background: 'var(--bg-surface)', 
-              border: '1px solid var(--border)',
-              borderTop: '3px solid var(--ice-primary)'
-            }}
-          >
-            <div 
-              className="w-12 h-12 rounded-lg flex items-center justify-center text-white text-2xl mb-3 group-hover:scale-110 transition-transform shadow-md"
-              style={{ background: 'var(--ice-primary)' }}
-            >
-              🚀
-            </div>
-            <h3 className="text-lg font-bold mb-1.5" style={{ color: 'var(--text-primary)' }}>Launchpad</h3>
-            <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-              Create B20 tokens without code. Asset and Stablecoin support.
-            </p>
-          </Link>
-
+        <div className="grid md:grid-cols-2 gap-4 mb-12">
           <Link
             href="/swap"
             className="group p-6 rounded-xl transition-all hover:shadow-xl"
