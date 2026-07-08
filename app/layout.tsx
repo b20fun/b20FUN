@@ -11,6 +11,9 @@ const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"] }
 export const metadata: Metadata = {
   title: "B20TOKEN - Base B20 Token Launchpad & DEX",
   description: "Create, swap, and explore B20 tokens on Base network",
+  other: {
+    'base:app_id': '6a4d9a6e19535d66792cfb74',
+  },
 };
 
 export default function RootLayout({
