@@ -23,6 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="base:app_id" content="6a4d9a6e19535d66792cfb74" />
+      </head>
       <body className={inter.className}>
         <Providers>
           <ToastProvider>
