@@ -56,7 +56,7 @@ export default function LaunchpadPage() {
         args: [variant === 'ASSET' ? 0 : 1, salt, params, [] as `0x${string}`[]],
       });
     } catch {
-      setError('Token oluşturma başlatılamadı');
+      setError('Failed to initiate token creation');
       setStep(STEP.FEE_PAYMENT);
     }
   };
