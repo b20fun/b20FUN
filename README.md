@@ -40,6 +40,10 @@ NEXT_PUBLIC_FEE_RECIPIENT_ADDRESS=0x...
 NEXT_PUBLIC_RPC_URL=https://sepolia.base.org
 NEXT_PUBLIC_CHAIN_ID=84532
 
+# Base Builder Code (Optional - Get yours from base.dev)
+# Enables onchain attribution and rewards
+NEXT_PUBLIC_BUILDER_CODE=bc_yourcode
+
 # Supabase
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
@@ -51,6 +55,16 @@ SUPABASE_SERVICE_ROLE_KEY=your_service_key
 2. Ücretsiz hesap oluşturun
 3. Yeni proje oluşturun
 4. Project ID'yi kopyalayın
+
+#### Base Builder Code Alma (Opsiyonel)
+1. [base.dev](https://base.dev) adresine gidin
+2. Uygulamanızı kaydedin
+3. Settings > Builder Code'dan kodunuzu alın
+4. **Faydaları:**
+   - 🎁 Transaction ödülleri kazanabilirsiniz
+   - 📊 base.dev'de detaylı analytics
+   - 🔍 App Leaderboard'larda görünürlük
+5. **Not:** Builder Code ERC-8021 standardını kullanarak tüm transaction'lara otomatik olarak eklenir (smart contract'ları etkilemez)
 
 #### Supabase Kurulumu
 1. [supabase.com](https://supabase.com) adresine gidin
