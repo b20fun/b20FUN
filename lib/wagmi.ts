@@ -5,8 +5,7 @@ import { http } from 'wagmi';
 
 // Base Builder Code - Get yours from base.dev > Settings > Builder Code
 // This enables onchain attribution for all transactions made through the app
-// Replace 'bc_b20token' with your actual code from base.dev
-const BUILDER_CODE = process.env.NEXT_PUBLIC_BUILDER_CODE || 'bc_b20token';
+const BUILDER_CODE = process.env.NEXT_PUBLIC_BUILDER_CODE || 'bc_0997z4ol';
 
 // Generate the ERC-8021 attribution suffix
 const DATA_SUFFIX = Attribution.toDataSuffix({
