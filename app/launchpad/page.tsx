@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt, useSendTransaction, useWriteContract, usePublicClient } from 'wagmi';
-import { parseEther, keccak256, toHex } from 'viem';
+import { parseEther, keccak256, toHex, isAddress } from 'viem';
 import { Attribution } from 'ox/erc8021';
 import { B20_FACTORY_ADDRESS, PLATFORM } from '@/lib/constants';
 
@@ -46,6 +46,14 @@ export default function LaunchpadPage() {
   const { data: createHash, writeContract: createToken } = useWriteContract();
   const { isLoading: isCreateLoading, isSuccess: isCreateSuccess } = useWaitForTransactionReceipt({ hash: createHash });
 
+  // Input sanitization helper
+  const sanitizeInput = (input: string): string => {
+    return input
+      .replace(/[|]/g, '') // Remove pipe character (used as delimiter)
+      .replace(/[<>]/g, '') // Remove HTML tags
+      .trim();
+  };
+
   const handleCreateToken = () => {
     if (!address) return;
     setStep(STEP.TOKEN_CREATION);
@@ -53,7 +61,10 @@ export default function LaunchpadPage() {
     try {
       const salt = keccak256(toHex(`${address}-${Date.now()}`));
       const finalDecimals = variant === 'STABLECOIN' ? 6 : decimals;
-      const params = toHex(`${tokenName}|${tokenSymbol}|${adminAddress || address}|${finalDecimals}`);
+      // Sanitize inputs before encoding
+      const sanitizedName = sanitizeInput(tokenName);
+      const sanitizedSymbol = sanitizeInput(tokenSymbol);
+      const params = toHex(`${sanitizedName}|${sanitizedSymbol}|${adminAddress || address}|${finalDecimals}`);
       createToken({
         address: B20_FACTORY_ADDRESS,
         abi: B20_FACTORY_ABI,
@@ -119,6 +130,32 @@ export default function LaunchpadPage() {
     if (!isConnected || !address) { setError('Please connect your wallet'); return; }
     if (!isFormValid) { setError('Please fill in all fields'); return; }
     
+    // HIGH PRIORITY: Admin address validation
+    if (adminAddress && !isAddress(adminAddress)) {
+      setError('Invalid admin address. Must be a valid Ethereum address (0x...)');
+      return;
+    }
+    
+    // HIGH PRIORITY: Token symbol validation (server-side)
+    if (!/^[A-Z0-9]+$/.test(tokenSymbol)) {
+      setError('Token symbol can only contain letters (A-Z) and numbers (0-9)');
+      return;
+    }
+    
+    if (tokenSymbol.length === 0 || tokenSymbol.length > 10) {
+      setError('Token symbol must be 1-10 characters');
+      return;
+    }
+    
+    // HIGH PRIORITY: Decimals validation (server-side)
+    if (variant === 'ASSET') {
+      const decimalValue = parseInt(decimals.toString());
+      if (isNaN(decimalValue) || decimalValue < 6 || decimalValue > 18) {
+        setError('Decimals must be a number between 6 and 18');
+        return;
+      }
+    }
+    
     // Check activation
     const isActivated = await checkActivation();
     if (!isActivated) {
@@ -179,6 +216,52 @@ export default function LaunchpadPage() {
                 <p className="text-xs mb-1" style={{ color: 'var(--text-secondary)' }}>Transaction Hash:</p>
                 <p className="font-mono text-xs break-all" style={{ color: 'var(--text-secondary)' }}>{createHash}</p>
               </div>
+              
+              {/* Admin Risk Warning */}
+              <div className="rounded-lg p-4 mb-4 text-left" style={{ background: '#FEF3C7', border: '2px solid #FCD34D' }}>
+                <div className="flex items-start gap-2 mb-2">
+                  <span className="text-lg">⚠️</span>
+                  <div>
+                    <h3 className="text-sm font-bold mb-1" style={{ color: '#92400E' }}>Token Admin Controls</h3>
+                    <p className="text-xs mb-2" style={{ color: '#92400E' }}>
+                      Admin Address: <span className="font-mono">{adminAddress || address}</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-1.5 mb-3">
+                  <div className="flex items-start gap-2">
+                    <span className="text-xs" style={{ color: '#DC2626' }}>🔴</span>
+                    <p className="text-xs" style={{ color: '#92400E' }}>Admin can mint unlimited tokens (no supply cap set)</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-xs" style={{ color: '#DC2626' }}>🔴</span>
+                    <p className="text-xs" style={{ color: '#92400E' }}>Admin can pause all transfers at any time</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-xs" style={{ color: '#DC2626' }}>🔴</span>
+                    <p className="text-xs" style={{ color: '#92400E' }}>Admin can blocklist addresses</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-xs" style={{ color: '#DC2626' }}>🔴</span>
+                    <p className="text-xs" style={{ color: '#92400E' }}>Admin can burn user balances (BURN_BLOCKED_ROLE)</p>
+                  </div>
+                </div>
+                <div className="rounded p-2 mb-2" style={{ background: '#FEE2E2', border: '1px solid #FCA5A5' }}>
+                  <p className="text-xs font-semibold" style={{ color: '#991B1B' }}>
+                    ⚠️ B20 FUN does NOT control this token after creation. Do your own research (DYOR) before trading.
+                  </p>
+                </div>
+                <a 
+                  href="https://docs.base.org/base-chain/specs/upgrades/beryl/b20" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-xs underline inline-block"
+                  style={{ color: '#1E40AF' }}
+                >
+                  Learn more about B20 admin roles →
+                </a>
+              </div>
+              
               <button onClick={resetForm} className="text-white px-5 py-2.5 rounded-lg text-sm font-medium" style={{ background: 'var(--ice-primary)' }}>Create New Token</button>
             </div>
           )}
