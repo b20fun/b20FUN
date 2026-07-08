@@ -1,0 +1,16 @@
+{
+  // Dosya çakışmalarını önlemek için otomatik kaydetme ve yenileme ayarları
+  "files.autoSave": "off",
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.next/**": true
+  },
+  // Disk değişikliklerini otomatik algıla ve yenile
+  "files.refactoring.autoSave": false,
+  // Conflict durumunda otomatik olarak disk versiyonunu al
+  "files.hotExit": "off",
+  // Dosya değişikliklerini otomatik yükle (Kiro değişikliklerini algıla)
+  "files.useExperimentalFileWatcher": true
+}
