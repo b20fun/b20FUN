@@ -83,7 +83,7 @@ export default function Home() {
         {/* Stats / Features */}
         <div className="glass rounded-xl p-6" style={{ border: '1px solid var(--border)' }}>
           <h3 className="text-xl font-bold text-center mb-6" style={{ color: 'var(--text-primary)' }}>Platform Features</h3>
-          <div className="grid md:grid-cols-4 gap-4 text-center">
+          <div className="grid md:grid-cols-3 gap-4 text-center">
             <div>
               <div className="text-2xl mb-1.5">✅</div>
               <h4 className="font-semibold text-sm mb-0.5" style={{ color: 'var(--text-primary)' }}>ERC-20 Compatible</h4>
@@ -98,11 +98,6 @@ export default function Home() {
               <div className="text-2xl mb-1.5">⚡</div>
               <h4 className="font-semibold text-sm mb-0.5" style={{ color: 'var(--text-primary)' }}>Base Network</h4>
               <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Fast and cheap transactions</p>
-            </div>
-            <div>
-              <div className="text-2xl mb-1.5">🔌</div>
-              <h4 className="font-semibold text-sm mb-0.5" style={{ color: 'var(--text-primary)' }}>x402 API</h4>
-              <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Programmatic data access</p>
             </div>
           </div>
         </div>
