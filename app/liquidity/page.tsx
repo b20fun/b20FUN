@@ -3,9 +3,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, usePublicClient } from 'wagmi';
 import { parseUnits, formatUnits, type Address } from 'viem';
+import { Attribution } from 'ox/erc8021';
 import { AERODROME } from '@/lib/constants';
 import { aerodromeRouterAbi, erc20Abi } from '@/lib/swap/abis';
 import { useToast } from '@/components/Toast';
+
+// Builder Code Attribution
+const BUILDER_CODE = process.env.NEXT_PUBLIC_BUILDER_CODE || 'bc_0997z4ol';
+const DATA_SUFFIX = Attribution.toDataSuffix({ codes: [BUILDER_CODE] });
 
 const TOKENS = [
   { symbol: 'WETH', address: '0x4200000000000000000000000000000000000006' as `0x${string}`, decimals: 18 },
@@ -284,7 +289,8 @@ export default function LiquidityPage() {
         address: poolAddress,
         abi: erc20Abi,
         functionName: 'approve',
-        args: [AERODROME.ROUTER as Address, lpAmount]
+        args: [AERODROME.ROUTER as Address, lpAmount],
+        dataSuffix: DATA_SUFFIX,
       });
       await publicClient?.waitForTransactionReceipt({ hash: hashApprove });
 
@@ -312,6 +318,7 @@ export default function LiquidityPage() {
         }] as const,
         functionName: 'removeLiquidity',
         args: [tokenA.address, tokenB.address, false, lpAmount, minA, minB, address, deadline],
+        dataSuffix: DATA_SUFFIX,
       });
 
       await publicClient?.waitForTransactionReceipt({ hash });
@@ -370,7 +377,8 @@ export default function LiquidityPage() {
         address: tokenA.address,
         abi: erc20Abi,
         functionName: 'approve',
-        args: [AERODROME.ROUTER as Address, amtA]
+        args: [AERODROME.ROUTER as Address, amtA],
+        dataSuffix: DATA_SUFFIX,
       });
       await publicClient?.waitForTransactionReceipt({ hash: hashA });
       console.log('Token A approved:', hashA);
@@ -380,7 +388,8 @@ export default function LiquidityPage() {
         address: tokenB.address,
         abi: erc20Abi,
         functionName: 'approve',
-        args: [AERODROME.ROUTER as Address, amtB]
+        args: [AERODROME.ROUTER as Address, amtB],
+        dataSuffix: DATA_SUFFIX,
       });
       await publicClient?.waitForTransactionReceipt({ hash: hashB });
       console.log('Token B approved:', hashB);
@@ -411,6 +420,7 @@ export default function LiquidityPage() {
         }] as const,
         functionName: 'addLiquidity',
         args: [tokenA.address, tokenB.address, false, amtA, amtB, minA, minB, address, deadline],
+        dataSuffix: DATA_SUFFIX,
       });
 
       await publicClient?.waitForTransactionReceipt({ hash });

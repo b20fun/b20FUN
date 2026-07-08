@@ -27,6 +27,7 @@ type ExecuteSwapArgs = {
   amountIn: bigint;
   minAmountOut: bigint;
   userAddress: Address;
+  dataSuffix?: `0x${string}`; // Builder Code attribution
 };
 
 const FEE_TIER = 3000;
@@ -39,6 +40,7 @@ export async function executeSwap({
   amountIn,
   minAmountOut,
   userAddress,
+  dataSuffix,
 }: ExecuteSwapArgs): Promise<`0x${string}`> {
   const isEthIn = tokenIn === NATIVE_ETH;
   const isEthOut = tokenOut === NATIVE_ETH;
@@ -75,6 +77,7 @@ export async function executeSwap({
         ] as const,
         functionName: "deposit",
         value: amountIn,
+        dataSuffix,
       });
     }
     
@@ -94,6 +97,7 @@ export async function executeSwap({
         ] as const,
         functionName: "withdraw",
         args: [amountIn],
+        dataSuffix,
       });
     }
     
@@ -119,6 +123,7 @@ export async function executeSwap({
         functionName: "swapExactETHForTokens",
         args: [minAmountOut, [route], userAddress, deadline],
         value: amountIn, // ETH sent here
+        dataSuffix,
       });
     }
 
@@ -128,6 +133,7 @@ export async function executeSwap({
         abi: aerodromeRouterAbi,
         functionName: "swapExactTokensForETH",
         args: [amountIn, minAmountOut, [route], userAddress, deadline],
+        dataSuffix,
       });
     }
 
@@ -137,6 +143,7 @@ export async function executeSwap({
       abi: aerodromeRouterAbi,
       functionName: "swapExactTokensForTokens",
       args: [amountIn, minAmountOut, [route], userAddress, deadline],
+      dataSuffix,
     });
   }
 
@@ -160,6 +167,7 @@ export async function executeSwap({
           sqrtPriceLimitX96: 0n,
         },
       ],
+      dataSuffix,
     });
   }
 
@@ -182,6 +190,7 @@ export async function executeSwap({
         },
       ],
       value: amountIn,
+      dataSuffix,
     });
   }
 
@@ -207,6 +216,7 @@ export async function executeSwap({
       functionName: "multicall",
       args: [[swapCalldata, unwrapCalldata]],
       value: isEthIn ? amountIn : 0n,
+      dataSuffix,
     });
   }
 

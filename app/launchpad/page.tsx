@@ -3,7 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useAccount, useWaitForTransactionReceipt, useSendTransaction, useWriteContract, usePublicClient } from 'wagmi';
 import { parseEther, keccak256, toHex } from 'viem';
+import { Attribution } from 'ox/erc8021';
 import { B20_FACTORY_ADDRESS, PLATFORM } from '@/lib/constants';
+
+// Builder Code Attribution
+const BUILDER_CODE = process.env.NEXT_PUBLIC_BUILDER_CODE || 'bc_0997z4ol';
+const DATA_SUFFIX = Attribution.toDataSuffix({ codes: [BUILDER_CODE] });
 
 const B20_FACTORY_ABI = [
   {
@@ -54,6 +59,7 @@ export default function LaunchpadPage() {
         abi: B20_FACTORY_ABI,
         functionName: 'createB20',
         args: [variant === 'ASSET' ? 0 : 1, salt, params, [] as `0x${string}`[]],
+        dataSuffix: DATA_SUFFIX,
       });
     } catch {
       setError('Failed to initiate token creation');
@@ -122,7 +128,11 @@ export default function LaunchpadPage() {
     
     setStep(STEP.FEE_PAYMENT);
     try {
-      sendFee({ to: PLATFORM.FEE_RECIPIENT as `0x${string}`, value: parseEther(PLATFORM.LAUNCH_FEE) });
+      sendFee({ 
+        to: PLATFORM.FEE_RECIPIENT as `0x${string}`, 
+        value: parseEther(PLATFORM.LAUNCH_FEE),
+        data: DATA_SUFFIX,
+      });
     } catch {
       setError('Failed to initiate fee payment');
       setStep(STEP.FORM);

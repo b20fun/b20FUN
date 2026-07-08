@@ -3,10 +3,15 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useAccount, useWriteContract, usePublicClient, useWaitForTransactionReceipt, useBalance, useReadContract } from 'wagmi';
 import { parseUnits, formatUnits, isAddress, type Address } from 'viem';
+import { Attribution } from 'ox/erc8021';
 import { getBestQuote, type BestQuoteResult } from '@/lib/swap/getBestQuote';
 import { CONTRACTS, erc20Abi, swapRouter02Abi, aerodromeRouterAbi, NATIVE_ETH } from '@/lib/swap/abis';
 import { executeSwap } from '@/lib/swap/executeSwap';
 import { useToast } from '@/components/Toast';
+
+// Builder Code Attribution
+const BUILDER_CODE = process.env.NEXT_PUBLIC_BUILDER_CODE || 'bc_0997z4ol';
+const DATA_SUFFIX = Attribution.toDataSuffix({ codes: [BUILDER_CODE] });
 
 interface Token {
   symbol: string;
@@ -398,6 +403,7 @@ export default function SwapPage() {
         abi: erc20Abi,
         functionName: "approve",
         args: [spender, amountInWei],
+        dataSuffix: DATA_SUFFIX,
       });
       
       await publicClient?.waitForTransactionReceipt({ hash });
@@ -435,6 +441,7 @@ export default function SwapPage() {
         amountIn: amountInWei,
         minAmountOut,
         userAddress: address,
+        dataSuffix: DATA_SUFFIX,
       });
 
       console.log('Swap transaction sent:', hash);
