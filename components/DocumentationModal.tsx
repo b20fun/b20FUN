@@ -9,7 +9,6 @@ interface DocumentationModalProps {
 
 export function DocumentationModal({ isOpen, onClose }: DocumentationModalProps) {
   const [activeSection, setActiveSection] = useState('intro');
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   if (!isOpen) return null;
 
@@ -26,11 +25,6 @@ export function DocumentationModal({ isOpen, onClose }: DocumentationModalProps)
     { id: 'faq', label: 'FAQ', icon: '💬' },
   ];
 
-  const handleMenuItemClick = (id: string) => {
-    setActiveSection(id);
-    setShowMobileMenu(false);
-  };
-
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-4" style={{ background: 'rgba(0,0,0,0.7)' }}>
       <div 
@@ -41,35 +35,22 @@ export function DocumentationModal({ isOpen, onClose }: DocumentationModalProps)
           maxHeight: '100vh',
           height: '100vh'
         }}
-        onClick={(e) => e.target === e.currentTarget && setShowMobileMenu(false)}
       >
-        {/* Left Sidebar - Menu (Desktop) / Mobile Overlay */}
+        {/* Left Sidebar - Menu (Desktop Only) */}
         <div 
-          className={`${
-            showMobileMenu ? 'translate-x-0' : '-translate-x-full'
-          } md:translate-x-0 fixed md:relative inset-y-0 left-0 w-64 md:w-64 flex-shrink-0 overflow-y-auto transition-transform duration-300 ease-in-out z-50`}
+          className="hidden md:block w-64 flex-shrink-0 overflow-y-auto"
           style={{ 
             background: 'var(--bg-surface)', 
             borderRight: '1px solid var(--border)' 
           }}
         >
           {/* Header */}
-          <div className="p-5 flex items-center justify-between md:justify-start gap-3" style={{ borderBottom: '1px solid var(--border)' }}>
-            <div className="flex items-center gap-3">
-              <div className="text-2xl">📖</div>
-              <div>
-                <h2 className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>AGROSFI</h2>
-                <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Documentation</p>
-              </div>
+          <div className="p-5 flex items-center gap-3" style={{ borderBottom: '1px solid var(--border)' }}>
+            <div className="text-2xl">📖</div>
+            <div>
+              <h2 className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>AGROSFI</h2>
+              <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Documentation</p>
             </div>
-            {/* Mobile close button */}
-            <button
-              onClick={() => setShowMobileMenu(false)}
-              className="md:hidden w-8 h-8 rounded-full flex items-center justify-center text-xl hover:opacity-70"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              ×
-            </button>
           </div>
 
           {/* Menu Items */}
@@ -77,7 +58,7 @@ export function DocumentationModal({ isOpen, onClose }: DocumentationModalProps)
             {menuItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => handleMenuItemClick(item.id)}
+                onClick={() => setActiveSection(item.id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mb-1 text-left ${
                   activeSection === item.id ? '' : 'hover:opacity-80'
                 }`}
@@ -93,44 +74,48 @@ export function DocumentationModal({ isOpen, onClose }: DocumentationModalProps)
           </nav>
         </div>
 
-        {/* Mobile Menu Overlay */}
-        {showMobileMenu && (
-          <div 
-            className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-            onClick={() => setShowMobileMenu(false)}
-          />
-        )}
-
         {/* Right Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Header with Close Button & Mobile Menu */}
           <div 
-            className="flex items-center justify-between p-4 md:p-5"
+            className="flex flex-col md:flex-row md:items-center md:justify-between p-4 md:p-5"
             style={{ borderBottom: '1px solid var(--border)' }}
           >
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setShowMobileMenu(true)}
-              className="md:hidden w-8 h-8 rounded-lg flex items-center justify-center hover:opacity-70"
-              style={{ background: 'var(--ice-pale)', color: 'var(--ice-deep)' }}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </svg>
-            </button>
+            <div className="flex items-center justify-between mb-3 md:mb-0">
+              <h1 className="text-lg md:text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                {menuItems.find(item => item.id === activeSection)?.label}
+              </h1>
+              <button
+                onClick={onClose}
+                className="w-8 h-8 rounded-full flex items-center justify-center text-xl hover:opacity-70 transition-opacity"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                ×
+              </button>
+            </div>
 
-            <h1 className="text-lg md:text-2xl font-bold flex-1 md:flex-none ml-3 md:ml-0" style={{ color: 'var(--text-primary)' }}>
-              {menuItems.find(item => item.id === activeSection)?.label}
-            </h1>
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-xl hover:opacity-70 transition-opacity"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              ×
-            </button>
+            {/* Mobile Horizontal Menu */}
+            <div className="md:hidden overflow-x-auto scrollbar-hide -mx-4 px-4">
+              <div className="flex gap-2 pb-2">
+                {menuItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveSection(item.id)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+                      activeSection === item.id ? '' : 'hover:opacity-80'
+                    }`}
+                    style={{
+                      background: activeSection === item.id ? 'var(--ice-primary)' : 'var(--bg-surface)',
+                      color: activeSection === item.id ? '#FFFFFF' : 'var(--text-primary)',
+                      border: activeSection === item.id ? 'none' : '1px solid var(--border)',
+                    }}
+                  >
+                    <span className="text-sm">{item.icon}</span>
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Content */}
