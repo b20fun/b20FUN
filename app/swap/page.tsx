@@ -463,6 +463,8 @@ export default function SwapPage() {
         to_token_symbol: tokenOut.symbol,
         from_token_name: tokenIn.name,
         to_token_name: tokenOut.name,
+        from_token_logo: tokenIn.logoURI || null,
+        to_token_logo: tokenOut.logoURI || null,
         from_amount: formatUnits(amountInWei, tokenIn.decimals),
         to_amount: formatUnits(quoteResult.best.amountOut, tokenOut.decimals),
         status: 'pending',

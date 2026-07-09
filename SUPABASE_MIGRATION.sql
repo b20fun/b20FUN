@@ -69,3 +69,17 @@ COMMENT ON COLUMN swap_history.tx_hash IS 'Blockchain transaction hash';
 COMMENT ON COLUMN swap_history.user_address IS 'User wallet address who initiated the swap';
 COMMENT ON COLUMN swap_history.status IS 'Transaction status: pending, completed, failed';
 COMMENT ON COLUMN swap_history.dex_used IS 'Which DEX was used: uniswap or aerodrome';
+
+
+-- ======================================================
+-- Add logo columns to swap_history table
+-- Created: 2026-07-09
+-- Purpose: Store token logo URLs for better UI display
+-- ======================================================
+
+ALTER TABLE swap_history 
+ADD COLUMN IF NOT EXISTS from_token_logo TEXT,
+ADD COLUMN IF NOT EXISTS to_token_logo TEXT;
+
+COMMENT ON COLUMN swap_history.from_token_logo IS 'Logo URL for the source token';
+COMMENT ON COLUMN swap_history.to_token_logo IS 'Logo URL for the destination token';

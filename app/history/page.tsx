@@ -16,6 +16,8 @@ interface Transaction {
   to_token_symbol: string;
   from_token_name: string;
   to_token_name: string;
+  from_token_logo?: string;
+  to_token_logo?: string;
   from_amount: string;
   to_amount: string;
   status: 'completed' | 'pending' | 'failed';
@@ -203,8 +205,19 @@ export default function HistoryPage() {
                         <div className="flex items-center gap-2">
                           {/* From Token */}
                           <div className="flex items-center gap-1.5">
+                            {tx.from_token_logo ? (
+                              <img
+                                src={tx.from_token_logo}
+                                alt={tx.from_token_symbol}
+                                className="w-8 h-8 rounded-full"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).style.display = 'none';
+                                  (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                                }}
+                              />
+                            ) : null}
                             <div
-                              className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-xs"
+                              className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-xs ${tx.from_token_logo ? 'hidden' : ''}`}
                               style={{ background: 'var(--ice-primary)' }}
                             >
                               {tx.from_token_symbol.slice(0, 2)}
@@ -221,8 +234,19 @@ export default function HistoryPage() {
 
                           {/* To Token */}
                           <div className="flex items-center gap-1.5">
+                            {tx.to_token_logo ? (
+                              <img
+                                src={tx.to_token_logo}
+                                alt={tx.to_token_symbol}
+                                className="w-8 h-8 rounded-full"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).style.display = 'none';
+                                  (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                                }}
+                              />
+                            ) : null}
                             <div
-                              className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-xs"
+                              className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-xs ${tx.to_token_logo ? 'hidden' : ''}`}
                               style={{ background: 'var(--ice-deep)' }}
                             >
                               {tx.to_token_symbol.slice(0, 2)}
