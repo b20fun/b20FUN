@@ -9,6 +9,7 @@ interface DocumentationModalProps {
 
 export function DocumentationModal({ isOpen, onClose }: DocumentationModalProps) {
   const [activeSection, setActiveSection] = useState('intro');
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   if (!isOpen) return null;
 
@@ -25,31 +26,50 @@ export function DocumentationModal({ isOpen, onClose }: DocumentationModalProps)
     { id: 'faq', label: 'FAQ', icon: '💬' },
   ];
 
+  const handleMenuItemClick = (id: string) => {
+    setActiveSection(id);
+    setShowMobileMenu(false);
+  };
+
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.7)' }}>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-4" style={{ background: 'rgba(0,0,0,0.7)' }}>
       <div 
-        className="rounded-2xl w-full max-w-6xl mx-4 overflow-hidden shadow-2xl flex"
+        className="w-full h-full md:rounded-2xl md:max-w-6xl overflow-hidden shadow-2xl flex flex-col md:flex-row"
         style={{ 
           background: 'var(--bg-base)', 
-          border: '1px solid var(--border)',
-          height: '85vh'
+          border: '0 md:1px solid var(--border)',
+          maxHeight: '100vh',
+          height: '100vh'
         }}
+        onClick={(e) => e.target === e.currentTarget && setShowMobileMenu(false)}
       >
-        {/* Left Sidebar - Menu */}
+        {/* Left Sidebar - Menu (Desktop) / Mobile Overlay */}
         <div 
-          className="w-64 flex-shrink-0 overflow-y-auto"
+          className={`${
+            showMobileMenu ? 'translate-x-0' : '-translate-x-full'
+          } md:translate-x-0 fixed md:relative inset-y-0 left-0 w-64 md:w-64 flex-shrink-0 overflow-y-auto transition-transform duration-300 ease-in-out z-50`}
           style={{ 
             background: 'var(--bg-surface)', 
             borderRight: '1px solid var(--border)' 
           }}
         >
           {/* Header */}
-          <div className="p-5 flex items-center gap-3" style={{ borderBottom: '1px solid var(--border)' }}>
-            <div className="text-2xl">📖</div>
-            <div>
-              <h2 className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>AGROSFI</h2>
-              <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Documentation</p>
+          <div className="p-5 flex items-center justify-between md:justify-start gap-3" style={{ borderBottom: '1px solid var(--border)' }}>
+            <div className="flex items-center gap-3">
+              <div className="text-2xl">📖</div>
+              <div>
+                <h2 className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>AGROSFI</h2>
+                <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Documentation</p>
+              </div>
             </div>
+            {/* Mobile close button */}
+            <button
+              onClick={() => setShowMobileMenu(false)}
+              className="md:hidden w-8 h-8 rounded-full flex items-center justify-center text-xl hover:opacity-70"
+              style={{ color: 'var(--text-secondary)' }}
+            >
+              ×
+            </button>
           </div>
 
           {/* Menu Items */}
@@ -57,7 +77,7 @@ export function DocumentationModal({ isOpen, onClose }: DocumentationModalProps)
             {menuItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveSection(item.id)}
+                onClick={() => handleMenuItemClick(item.id)}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all mb-1 text-left ${
                   activeSection === item.id ? '' : 'hover:opacity-80'
                 }`}
@@ -73,14 +93,35 @@ export function DocumentationModal({ isOpen, onClose }: DocumentationModalProps)
           </nav>
         </div>
 
+        {/* Mobile Menu Overlay */}
+        {showMobileMenu && (
+          <div 
+            className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => setShowMobileMenu(false)}
+          />
+        )}
+
         {/* Right Content Area */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Header with Close Button */}
+          {/* Header with Close Button & Mobile Menu */}
           <div 
-            className="flex items-center justify-between p-5"
+            className="flex items-center justify-between p-4 md:p-5"
             style={{ borderBottom: '1px solid var(--border)' }}
           >
-            <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setShowMobileMenu(true)}
+              className="md:hidden w-8 h-8 rounded-lg flex items-center justify-center hover:opacity-70"
+              style={{ background: 'var(--ice-pale)', color: 'var(--ice-deep)' }}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+
+            <h1 className="text-lg md:text-2xl font-bold flex-1 md:flex-none ml-3 md:ml-0" style={{ color: 'var(--text-primary)' }}>
               {menuItems.find(item => item.id === activeSection)?.label}
             </h1>
             <button
@@ -93,7 +134,7 @@ export function DocumentationModal({ isOpen, onClose }: DocumentationModalProps)
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex-1 overflow-y-auto p-4 md:p-6">
             <div className="max-w-3xl">
               {activeSection === 'intro' && <IntroContent />}
               {activeSection === 'what-is' && <WhatIsContent />}
@@ -117,45 +158,45 @@ export function DocumentationModal({ isOpen, onClose }: DocumentationModalProps)
 function IntroContent() {
   return (
     <div className="prose prose-sm max-w-none" style={{ color: 'var(--text-primary)' }}>
-      <p className="text-base leading-relaxed mb-4" style={{ color: 'var(--text-secondary)' }}>
+      <p className="text-sm md:text-base leading-relaxed mb-4" style={{ color: 'var(--text-secondary)' }}>
         AGROSFI is a <strong>DEX Aggregator</strong> protocol running on the <strong>Base Mainnet</strong>. 
         For a single swap, it scans dozens of liquidity pools (Uniswap, Aerodrome) and finds the best route 
         based on a balance of price, gas, and slippage.
       </p>
 
-      <h3 className="text-lg font-bold mt-6 mb-3" style={{ color: 'var(--text-primary)' }}>Three things set it apart from other aggregators:</h3>
+      <h3 className="text-base md:text-lg font-bold mt-6 mb-3" style={{ color: 'var(--text-primary)' }}>Three things set it apart from other aggregators:</h3>
 
-      <div className="space-y-4 mb-6">
-        <div className="p-4 rounded-lg" style={{ background: 'var(--ice-pale)', border: '1px solid var(--border)' }}>
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">⚡</span>
+      <div className="space-y-3 md:space-y-4 mb-6">
+        <div className="p-3 md:p-4 rounded-lg" style={{ background: 'var(--ice-pale)', border: '1px solid var(--border)' }}>
+          <div className="flex items-start gap-2 md:gap-3">
+            <span className="text-xl md:text-2xl">⚡</span>
             <div>
-              <h4 className="font-semibold mb-1" style={{ color: 'var(--ice-deep)' }}>Lightning Fast</h4>
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+              <h4 className="font-semibold text-sm md:text-base mb-1" style={{ color: 'var(--ice-deep)' }}>Lightning Fast</h4>
+              <p className="text-xs md:text-sm" style={{ color: 'var(--text-secondary)' }}>
                 Built on Base network for high-speed transactions with minimal gas fees.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="p-4 rounded-lg" style={{ background: 'var(--ice-pale)', border: '1px solid var(--border)' }}>
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">🔄</span>
+        <div className="p-3 md:p-4 rounded-lg" style={{ background: 'var(--ice-pale)', border: '1px solid var(--border)' }}>
+          <div className="flex items-start gap-2 md:gap-3">
+            <span className="text-xl md:text-2xl">🔄</span>
             <div>
-              <h4 className="font-semibold mb-1" style={{ color: 'var(--ice-deep)' }}>Multi-DEX Routing</h4>
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+              <h4 className="font-semibold text-sm md:text-base mb-1" style={{ color: 'var(--ice-deep)' }}>Multi-DEX Routing</h4>
+              <p className="text-xs md:text-sm" style={{ color: 'var(--text-secondary)' }}>
                 Compares prices across Uniswap and Aerodrome to find you the best rate.
               </p>
             </div>
           </div>
         </div>
 
-        <div className="p-4 rounded-lg" style={{ background: 'var(--ice-pale)', border: '1px solid var(--border)' }}>
-          <div className="flex items-start gap-3">
-            <span className="text-2xl">🔐</span>
+        <div className="p-3 md:p-4 rounded-lg" style={{ background: 'var(--ice-pale)', border: '1px solid var(--border)' }}>
+          <div className="flex items-start gap-2 md:gap-3">
+            <span className="text-xl md:text-2xl">🔐</span>
             <div>
-              <h4 className="font-semibold mb-1" style={{ color: 'var(--ice-deep)' }}>Built-in Compliance</h4>
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+              <h4 className="font-semibold text-sm md:text-base mb-1" style={{ color: 'var(--ice-deep)' }}>Built-in Compliance</h4>
+              <p className="text-xs md:text-sm" style={{ color: 'var(--text-secondary)' }}>
                 ERC-20 and B20 token standard support with role-based access control.
               </p>
             </div>
@@ -163,19 +204,19 @@ function IntroContent() {
         </div>
       </div>
 
-      <div className="p-4 rounded-lg" style={{ background: '#FEF3C7', border: '1px solid #FCD34D' }}>
-        <p className="text-sm" style={{ color: '#92400E' }}>
+      <div className="p-3 md:p-4 rounded-lg" style={{ background: '#FEF3C7', border: '1px solid #FCD34D' }}>
+        <p className="text-xs md:text-sm" style={{ color: '#92400E' }}>
           ⚠️ <strong>AGROSFI currently only operates on Base Mainnet.</strong> All transactions are irreversible — 
           check the price impact, slippage, and fees on the Swap Preview screen before confirming a swap.
         </p>
       </div>
 
-      <h3 className="text-lg font-bold mt-6 mb-3" style={{ color: 'var(--text-primary)' }}>Getting Started</h3>
-      <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--text-secondary)' }}>
+      <h3 className="text-base md:text-lg font-bold mt-6 mb-3" style={{ color: 'var(--text-primary)' }}>Getting Started</h3>
+      <p className="text-xs md:text-sm leading-relaxed mb-4" style={{ color: 'var(--text-secondary)' }}>
         Network: <strong>Base Mainnet</strong> (an OP Stack-based Ethereum L2), native token <strong>ETH</strong>, 
         supported stablecoin <strong>USDC</strong>.
       </p>
-      <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+      <p className="text-xs md:text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
         When determining a route, AGROSFI compares Uniswap V3 and Aerodrome. Pool depth, live price, 
         and gas cost are recalculated with every swap request.
       </p>
