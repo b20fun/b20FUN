@@ -10,8 +10,8 @@ import { SocialLinks } from "@/components/SocialLinks";
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
 export const metadata: Metadata = {
-  title: "B20 FUN - Base B20 Token Launchpad & DEX",
-  description: "Create, swap, and explore B20 tokens on Base network",
+  title: "AGROSFI - Base B20 Token DEX Platform",
+  description: "Trade tokens at the best price across Base network DEXs",
   other: {
     'base:app_id': '6a4d9a6e19535d66792cfb74',
   },

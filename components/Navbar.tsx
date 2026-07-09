@@ -25,13 +25,13 @@ export function Navbar() {
           >
             <img 
               src="/b20 logo.png" 
-              alt="B20 FUN Logo" 
+              alt="AGROSFI Logo" 
               className="w-full h-full object-contain"
               style={{ padding: '2px' }}
             />
           </div>
           <div>
-            <div className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>B20 FUN</div>
+            <div className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>AGROSFI</div>
             <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>DEX Aggregator</div>
           </div>
         </Link>

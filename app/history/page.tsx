@@ -144,7 +144,7 @@ export default function HistoryPage() {
             📜 Transaction History
           </h1>
           <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-            Your complete swap transaction history on B20 FUN
+            Your complete swap transaction history on AGROSFI
           </p>
         </div>
 

@@ -13,7 +13,7 @@ const DATA_SUFFIX = Attribution.toDataSuffix({
 });
 
 export const config = getDefaultConfig({
-  appName: 'B20 FUN',
+  appName: 'AGROSFI',
   projectId: process.env.NEXT_PUBLIC_REOWN_PROJECT_ID!,
   chains: [base], // Base Mainnet (Chain ID: 8453)
   transports: {

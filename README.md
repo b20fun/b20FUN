@@ -1,4 +1,4 @@
-# B20 FUN - Base B20 Token Launchpad & DEX Platform
+# AGROSFI - Base B20 Token DEX Platform
 
 **Live Demo:** [https://agrosfi.vercel.app/](https://agrosfi.vercel.app/)
 

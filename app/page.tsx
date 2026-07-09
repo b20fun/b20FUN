@@ -12,7 +12,7 @@ export default function Home() {
             <span className="font-semibold text-xs" style={{ color: 'var(--ice-deep)' }}>⚡ Base Mainnet</span>
           </div>
           <h1 className="text-4xl font-bold mb-4" style={{ color: 'var(--ice-deep)' }}>
-            B20 FUN Platform
+            AGROSFI Platform
           </h1>
           <p className="text-lg mb-6 max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>
             Trade tokens at the best price across Base network DEXs
