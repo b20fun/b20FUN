@@ -470,17 +470,32 @@ export default function SwapPage() {
         chain_id: 8453,
       };
       
-      // Save to Supabase (don't await to not block UX)
-      supabase.from('swap_history').insert(historyRecord).then(({ error }) => {
-        if (error) console.error('Failed to save swap history:', error);
-      });
+      console.log('Saving to swap_history:', historyRecord);
+      
+      // Save to Supabase
+      const { data: insertData, error: insertError } = await supabase
+        .from('swap_history')
+        .insert(historyRecord);
+      
+      if (insertError) {
+        console.error('❌ Failed to save swap history:', insertError);
+      } else {
+        console.log('✅ Swap history saved successfully:', insertData);
+      }
       
       await publicClient?.waitForTransactionReceipt({ hash });
       
       // Update status to completed
-      supabase.from('swap_history').update({ status: 'completed' }).eq('tx_hash', hash).then(({ error }) => {
-        if (error) console.error('Failed to update swap history:', error);
-      });
+      const { error: updateError } = await supabase
+        .from('swap_history')
+        .update({ status: 'completed' })
+        .eq('tx_hash', hash);
+      
+      if (updateError) {
+        console.error('❌ Failed to update swap history:', updateError);
+      } else {
+        console.log('✅ Swap history updated to completed');
+      }
       
       // Swap başarılı, bakiyeleri hemen güncelle
       refetchBalanceIn();
