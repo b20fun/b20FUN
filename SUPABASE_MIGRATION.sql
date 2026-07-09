@@ -24,3 +24,48 @@ WHERE chain_id IS NULL;
 -- Make column NOT NULL after setting defaults
 ALTER TABLE tokens 
 ALTER COLUMN chain_id SET NOT NULL;
+
+
+-- ======================================================
+-- Swap History Table Migration
+-- Created: 2026-07-09
+-- Purpose: Track all swap transactions for user history
+-- ======================================================
+
+-- Create swap_history table
+CREATE TABLE IF NOT EXISTS swap_history (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  tx_hash TEXT NOT NULL UNIQUE,
+  user_address TEXT NOT NULL,
+  from_token_address TEXT NOT NULL,
+  to_token_address TEXT NOT NULL,
+  from_token_symbol TEXT NOT NULL,
+  to_token_symbol TEXT NOT NULL,
+  from_token_name TEXT,
+  to_token_name TEXT,
+  from_amount TEXT NOT NULL,
+  to_amount TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  dex_used TEXT, -- 'uniswap' or 'aerodrome'
+  timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  chain_id INTEGER DEFAULT 8453,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Add indexes for faster queries
+CREATE INDEX IF NOT EXISTS idx_swap_history_user ON swap_history(user_address);
+CREATE INDEX IF NOT EXISTS idx_swap_history_timestamp ON swap_history(timestamp DESC);
+CREATE INDEX IF NOT EXISTS idx_swap_history_tx_hash ON swap_history(tx_hash);
+CREATE INDEX IF NOT EXISTS idx_swap_history_status ON swap_history(status);
+
+-- Add constraint for status values
+ALTER TABLE swap_history 
+ADD CONSTRAINT check_swap_status 
+CHECK (status IN ('pending', 'completed', 'failed'));
+
+-- Add comments
+COMMENT ON TABLE swap_history IS 'Stores all swap transaction history for users';
+COMMENT ON COLUMN swap_history.tx_hash IS 'Blockchain transaction hash';
+COMMENT ON COLUMN swap_history.user_address IS 'User wallet address who initiated the swap';
+COMMENT ON COLUMN swap_history.status IS 'Transaction status: pending, completed, failed';
+COMMENT ON COLUMN swap_history.dex_used IS 'Which DEX was used: uniswap or aerodrome';

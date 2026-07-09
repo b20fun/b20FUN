@@ -8,6 +8,7 @@ const navigation = [
   { name: '🔄 Swap', href: '/swap' },
   { name: '📊 Explore', href: '/explore' },
   { name: '📈 Portfolio', href: '/portfolio' },
+  { name: '📜 History', href: '/history' },
 ];
 
 export function Navbar() {

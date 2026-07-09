@@ -8,10 +8,17 @@ import { getBestQuote, type BestQuoteResult } from '@/lib/swap/getBestQuote';
 import { CONTRACTS, erc20Abi, swapRouter02Abi, aerodromeRouterAbi, NATIVE_ETH } from '@/lib/swap/abis';
 import { executeSwap } from '@/lib/swap/executeSwap';
 import { useToast } from '@/components/Toast';
+import { createClient } from '@supabase/supabase-js';
 
 // Builder Code Attribution
 const BUILDER_CODE = process.env.NEXT_PUBLIC_BUILDER_CODE || 'bc_0997z4ol';
 const DATA_SUFFIX = Attribution.toDataSuffix({ codes: [BUILDER_CODE] });
+
+// Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 interface Token {
   symbol: string;
@@ -445,7 +452,35 @@ export default function SwapPage() {
       });
 
       console.log('Swap transaction sent:', hash);
+      
+      // Save to history immediately (pending status)
+      const historyRecord = {
+        tx_hash: hash,
+        user_address: address.toLowerCase(),
+        from_token_address: tokenIn.address.toLowerCase(),
+        to_token_address: tokenOut.address.toLowerCase(),
+        from_token_symbol: tokenIn.symbol,
+        to_token_symbol: tokenOut.symbol,
+        from_token_name: tokenIn.name,
+        to_token_name: tokenOut.name,
+        from_amount: formatUnits(amountInWei, tokenIn.decimals),
+        to_amount: formatUnits(quoteResult.best.amountOut, tokenOut.decimals),
+        status: 'pending',
+        dex_used: quoteResult.best.dex,
+        chain_id: 8453,
+      };
+      
+      // Save to Supabase (don't await to not block UX)
+      supabase.from('swap_history').insert(historyRecord).then(({ error }) => {
+        if (error) console.error('Failed to save swap history:', error);
+      });
+      
       await publicClient?.waitForTransactionReceipt({ hash });
+      
+      // Update status to completed
+      supabase.from('swap_history').update({ status: 'completed' }).eq('tx_hash', hash).then(({ error }) => {
+        if (error) console.error('Failed to update swap history:', error);
+      });
       
       // Swap başarılı, bakiyeleri hemen güncelle
       refetchBalanceIn();
@@ -465,7 +500,7 @@ export default function SwapPage() {
       showError(errorMessage);
       setStep("error");
     }
-  }, [quoteResult, amountInWei, minAmountOut, address, tokenIn.address, tokenOut.address, writeContractAsync, publicClient, refetchBalanceIn, refetchBalanceOut, refetchAllowance, showSuccess, showError]);
+  }, [quoteResult, amountInWei, minAmountOut, address, tokenIn, tokenOut, writeContractAsync, publicClient, refetchBalanceIn, refetchBalanceOut, refetchAllowance, showSuccess, showError]);
 
   // Rate calculation
   const rate = quoteResult?.best && parseFloat(amountIn) > 0 
