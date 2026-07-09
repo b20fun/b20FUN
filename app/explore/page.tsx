@@ -48,20 +48,23 @@ export default function ExplorePage() {
   }, []);
 
   useEffect(() => {
-    let result = tokens;
-    if (variantFilter !== 'ALL') {
-      result = result.filter((t) => t.variant === variantFilter);
-    }
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      result = result.filter(
-        (t) =>
-          t.name.toLowerCase().includes(q) ||
-          t.symbol.toLowerCase().includes(q) ||
-          t.address.toLowerCase().includes(q)
-      );
-    }
-    setFiltered(result);
+    const filterTokens = () => {
+      let result = tokens;
+      if (variantFilter !== 'ALL') {
+        result = result.filter((t) => t.variant === variantFilter);
+      }
+      if (search.trim()) {
+        const q = search.toLowerCase();
+        result = result.filter(
+          (t) =>
+            t.name.toLowerCase().includes(q) ||
+            t.symbol.toLowerCase().includes(q) ||
+            t.address.toLowerCase().includes(q)
+        );
+      }
+      return result;
+    };
+    setFiltered(filterTokens());
   }, [search, variantFilter, tokens]);
 
   function shortAddr(addr: string) {
@@ -69,7 +72,9 @@ export default function ExplorePage() {
   }
 
   function timeAgo(dateStr: string) {
-    const diff = Date.now() - new Date(dateStr).getTime();
+    const now = new Date();
+    const date = new Date(dateStr);
+    const diff = now.getTime() - date.getTime();
     const mins = Math.floor(diff / 60000);
     const hours = Math.floor(mins / 60);
     const days = Math.floor(hours / 24);

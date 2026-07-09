@@ -30,7 +30,6 @@ export default function HistoryPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [lastFetch, setLastFetch] = useState<Date>(new Date());
   const itemsPerPage = 5;
 
   useEffect(() => {
@@ -48,7 +47,6 @@ export default function HistoryPage() {
             console.error('Error fetching transactions:', error);
           } else if (data) {
             setTransactions(data);
-            setLastFetch(new Date());
           }
         });
     };
@@ -66,7 +64,6 @@ export default function HistoryPage() {
           setTransactions([]);
         } else {
           setTransactions(data || []);
-          setLastFetch(new Date());
         }
         setLoading(false);
       });

@@ -5,7 +5,7 @@ import { useAccount, useWriteContract, usePublicClient, useWaitForTransactionRec
 import { parseUnits, formatUnits, isAddress, type Address } from 'viem';
 import { Attribution } from 'ox/erc8021';
 import { getBestQuote, type BestQuoteResult } from '@/lib/swap/getBestQuote';
-import { CONTRACTS, erc20Abi, swapRouter02Abi, aerodromeRouterAbi, NATIVE_ETH } from '@/lib/swap/abis';
+import { CONTRACTS, erc20Abi, NATIVE_ETH } from '@/lib/swap/abis';
 import { executeSwap } from '@/lib/swap/executeSwap';
 import { useToast } from '@/components/Toast';
 import { createClient } from '@supabase/supabase-js';
@@ -110,9 +110,8 @@ function humanizeError(raw: string): string {
   return "An error occurred, please try again.";
 }
 
-type QuoteResult = { dex: 'uniswap' | 'aerodrome'; amountOut: bigint; formatted: string };
-
-// Token seçim modalı
+// Base Mainnet için güvenilir token'lar
+const DEFAULT_TOKENS: Token[] = [
 function TokenModal({ onSelect, onClose, exclude }: { onSelect: (t: Token) => void; onClose: () => void; exclude: Token }) {
   const publicClient = usePublicClient();
   const [search, setSearch] = useState('');
@@ -211,10 +210,10 @@ function TokenModal({ onSelect, onClose, exclude }: { onSelect: (t: Token) => vo
 }
 
 export default function SwapPage() {
-  const { address, isConnected, chain } = useAccount();
+  const { address, isConnected } = useAccount();
   const publicClient = usePublicClient();
   const { data: txHash, writeContractAsync } = useWriteContract();
-  const { isLoading: isTxLoading, isSuccess: isTxSuccess } = useWaitForTransactionReceipt({ hash: txHash });
+  const { isLoading: isTxLoading } = useWaitForTransactionReceipt({ hash: txHash });
   const { showSuccess, showError } = useToast();
 
   const [tokenIn, setTokenIn] = useState<Token>(DEFAULT_TOKENS[0]);   // ETH
@@ -233,11 +232,6 @@ export default function SwapPage() {
   const effectiveSlippage = customSlippage ? parseFloat(customSlippage) : slippage;
   const slippageBps = Math.floor(effectiveSlippage * 100); // %1 = 100 bps
 
-  // ETH native bakiyesi - use wallet's native balance
-  const { data: nativeBalance, isLoading: isBalanceLoading, isError: isBalanceError } = useBalance({ 
-    address: address,
-  });
-
   // Amount in wei
   const amountInWei = useMemo(() => {
     if (!amountIn || Number.isNaN(Number(amountIn))) return null;
@@ -247,10 +241,6 @@ export default function SwapPage() {
       return null;
     }
   }, [amountIn, tokenIn.decimals]);
-
-  // ETH ise WETH adresini kullan, yoksa token adresini
-  const addrIn = tokenIn.address === NATIVE_ETH ? WETH_ADDRESS : tokenIn.address;
-  const addrOut = tokenOut.address === NATIVE_ETH ? WETH_ADDRESS : tokenOut.address;
 
   // Allowance check - sadece ERC20 için (native ETH ve WETH wrap için değil)
   const { data: currentAllowance, refetch: refetchAllowance } = useReadContract({

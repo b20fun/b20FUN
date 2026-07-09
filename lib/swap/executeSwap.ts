@@ -18,9 +18,11 @@ import {
   NATIVE_ETH,
 } from "./abis";
 import type { DexQuote } from "./getBestQuote";
+import type { Config } from 'wagmi';
+import type { WriteContractMutateAsync } from 'wagmi/query';
 
 type ExecuteSwapArgs = {
-  writeContractAsync: WriteContractMutateAsync<any, any>;
+  writeContractAsync: WriteContractMutateAsync<Config, unknown>;
   best: DexQuote;
   tokenIn: Address; // NATIVE_ETH olabilir
   tokenOut: Address; // NATIVE_ETH olabilir

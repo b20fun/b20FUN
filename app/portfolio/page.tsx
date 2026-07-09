@@ -12,20 +12,34 @@ const POPULAR_TOKENS = [
   { symbol: 'DAI', address: '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb' as Address, decimals: 18, logo: 'https://assets.coingecko.com/coins/images/9956/small/dai-multi-collateral-mcd.png' },
 ];
 
+interface TokenBalance {
+  symbol: string;
+  name: string;
+  address: Address;
+  decimals: number;
+  emoji: string;
+  logoURI?: string;
+  balance: string;
+}
+
 export default function PortfolioPage() {
   const { address, isConnected } = useAccount();
   const publicClient = usePublicClient();
   const [tab, setTab] = useState<'wallet' | 'b20' | 'created'>('wallet');
   const [ethBal, setEthBal] = useState('0');
-  const [tokens, setTokens] = useState<any[]>([]);
-  const [b20Tokens, setB20Tokens] = useState<any[]>([]);
-  const [createdTokens, setCreatedTokens] = useState<any[]>([]);
+  const [tokens, setTokens] = useState<TokenBalance[]>([]);
+  const [b20Tokens, setB20Tokens] = useState<TokenBalance[]>([]);
+  const [createdTokens, setCreatedTokens] = useState<TokenBalance[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   useEffect(() => {
-    setCurrentPage(1); // Reset page when tab changes
+    // Reset page when tab changes - done before other effects
+    setCurrentPage(1);
+  }, [tab]);
+
+  useEffect(() => {
     if (!address || !publicClient) return;
     if (tab === 'wallet') {
       setLoading(true);
@@ -36,25 +50,25 @@ export default function PortfolioPage() {
             const bal = await publicClient.readContract({ address: t.address, abi: erc20Abi, functionName: 'balanceOf', args: [address] });
             return { ...t, balance: formatUnits(bal as bigint, t.decimals) };
           } catch { return null; }
-        })).then(r => setTokens(r.filter(Boolean) as any[]))
+        })).then(r => setTokens(r.filter((item): item is TokenBalance => item !== null)))
       ]).finally(() => setLoading(false));
     } else if (tab === 'b20') {
       setLoading(true);
       supabase.from('tokens').select('*').order('created_at', { ascending: false }).then(async ({ data }) => {
         if (!data) { setLoading(false); return; }
-        const results = await Promise.all(data.map(async (t: any) => {
+        const results = await Promise.all(data.map(async (t) => {
           try {
-            const bal = await publicClient.readContract({ address: t.address, abi: erc20Abi, functionName: 'balanceOf', args: [address] });
-            return bal > 0n ? { ...t, balance: formatUnits(bal as bigint, t.decimals) } : null;
+            const bal = await publicClient.readContract({ address: t.address as Address, abi: erc20Abi, functionName: 'balanceOf', args: [address] });
+            return bal > 0n ? { ...t, balance: formatUnits(bal as bigint, t.decimals) } as TokenBalance : null;
           } catch { return null; }
         }));
-        setB20Tokens(results.filter(Boolean) as any[]);
+        setB20Tokens(results.filter((item): item is TokenBalance => item !== null));
         setLoading(false);
       });
     } else if (tab === 'created') {
       setLoading(true);
       supabase.from('tokens').select('*').order('created_at', { ascending: false }).then(({ data }) => {
-        setCreatedTokens((data || []).filter((t: any) => t.deployer_address?.toLowerCase() === address.toLowerCase()));
+        setCreatedTokens((data || []).filter((t) => t.deployer_address?.toLowerCase() === address.toLowerCase()) as TokenBalance[]);
         setLoading(false);
       });
     }
@@ -67,7 +81,12 @@ export default function PortfolioPage() {
   );
 
   const shortAddr = (a: string) => a.slice(0, 6) + '...' + a.slice(-4);
-  const timeAgo = (d: string) => { const h = Math.floor((Date.now() - new Date(d).getTime()) / 3600000); return h > 24 ? Math.floor(h/24) + ' days ago' : h > 0 ? h + ' hours ago' : 'Just now'; };
+  const timeAgo = (d: string) => { 
+    const now = new Date();
+    const date = new Date(d);
+    const h = Math.floor((now.getTime() - date.getTime()) / 3600000); 
+    return h > 24 ? Math.floor(h/24) + ' days ago' : h > 0 ? h + ' hours ago' : 'Just now'; 
+  };
 
   return (
     <div className="p-6" style={{ paddingTop: '80px' }}><div className="max-w-4xl mx-auto">
@@ -140,7 +159,7 @@ export default function PortfolioPage() {
               const paginatedTokens = tokens.slice(startIdx, endIdx);
               const totalValue = (Number(ethBal) * 1780) + tokens.reduce((sum, tk) => sum + (Number(tk.balance) * (tk.symbol === 'USDC' ? 1 : tk.symbol === 'DAI' ? 1 : 1780)), 0);
               
-              return paginatedTokens.map((t: any, idx: number) => {
+              return paginatedTokens.map((t: TokenBalance) => {
                 const tokenPrice = t.symbol === 'USDC' ? 1 : t.symbol === 'DAI' ? 1 : 1780;
                 const tokenValue = Number(t.balance) * tokenPrice;
                 const percentage = (tokenValue / totalValue * 100).toFixed(1);
@@ -235,7 +254,7 @@ export default function PortfolioPage() {
           <h3 className="font-semibold text-base mb-2" style={{ color: 'var(--text-primary)' }}>No B20 token balance</h3>
           <div className="flex gap-2 justify-center mt-3"><a href="/swap" className="px-4 py-2 rounded-lg text-sm font-semibold text-white" style={{ background: 'var(--ice-primary)' }}>Swap</a></div></div>
         ) : (
-          <div className="space-y-2">{b20Tokens.map((t: any) => (
+          <div className="space-y-2">{b20Tokens.map((t: TokenBalance) => (
             <div key={t.id} className="rounded-lg p-3" style={{ background: 'var(--bg-base)', border: '1px solid var(--border)' }}>
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2"><div className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-white text-xs" style={{ background: 'var(--ice-primary)' }}>{t.symbol.slice(0,3)}</div>
@@ -260,7 +279,7 @@ export default function PortfolioPage() {
           <div className="text-center py-8 rounded-xl" style={{ background: 'var(--ice-pale)' }}><div className="text-3xl mb-2">🚀</div>
           <p className="font-semibold text-sm mb-1" style={{ color: 'var(--text-primary)' }}>No tokens created</p></div>
         ) : (
-          <div className="space-y-2">{createdTokens.map((t: any) => (
+          <div className="space-y-2">{createdTokens.map((t: TokenBalance) => (
             <div key={t.id} className="rounded-lg p-3" style={{ background: 'var(--bg-base)', border: '1px solid var(--border)' }}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2"><div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-[10px]" style={{ background: 'var(--ice-deep)' }}>{t.symbol.slice(0,3)}</div>
