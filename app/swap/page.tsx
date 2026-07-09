@@ -543,8 +543,7 @@ export default function SwapPage() {
         {/* Main Swap Card */}
         <div className="rounded-2xl p-5" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
           {/* Header with Slippage */}
-          <div className="flex items-center justify-between mb-5">
-            <h1 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>Swap</h1>
+          <div className="flex items-center justify-end mb-5">
             <button onClick={() => setShowSlippage(!showSlippage)}
               className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm hover:opacity-80 transition-opacity relative"
               style={{ background: 'var(--bg-base)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
@@ -609,9 +608,31 @@ export default function SwapPage() {
           </div>
 
           {/* Switch Button */}
-          <div className="flex justify-center -my-2 relative z-10">
-            <button onClick={switchTokens} className="w-10 h-10 rounded-full flex items-center justify-center shadow-md text-lg hover:opacity-80 transition-opacity"
-              style={{ background: 'var(--bg-surface)', border: '2px solid var(--border)', color: 'var(--ice-primary)' }}>↕</button>
+          <div className="flex justify-center -my-3 relative z-10">
+            <button 
+              onClick={switchTokens} 
+              className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-110"
+              style={{ 
+                background: 'var(--bg-surface)', 
+                border: '2px solid var(--ice-primary)', 
+                color: 'var(--ice-primary)' 
+              }}
+            >
+              <svg 
+                width="24" 
+                height="24" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <polyline points="19 12 12 19 5 12" />
+                <polyline points="5 12 12 5 19 12" />
+              </svg>
+            </button>
           </div>
 
           {/* You Receive */}
