@@ -5,6 +5,7 @@ import { Providers } from "./providers";
 import { Navbar } from "@/components/Navbar";
 import { NetworkGuard } from "@/components/NetworkGuard";
 import { ToastProvider } from "@/components/Toast";
+import { SocialLinks } from "@/components/SocialLinks";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
@@ -36,6 +37,7 @@ export default function RootLayout({
                   {children}
                 </main>
               </div>
+              <SocialLinks />
             </NetworkGuard>
           </ToastProvider>
         </Providers>
