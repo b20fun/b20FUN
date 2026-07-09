@@ -608,7 +608,7 @@ export default function SwapPage() {
           </div>
 
           {/* Switch Button */}
-          <div className="flex justify-center -my-2 relative z-10">
+          <div className="flex justify-center -my-4 relative z-10">
             <button 
               onClick={switchTokens} 
               className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-all"
