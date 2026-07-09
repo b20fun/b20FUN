@@ -44,7 +44,7 @@ export function Navbar() {
       <aside 
         className={`${
           isMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 fixed md:relative w-56 h-screen flex flex-col flex-shrink-0 shadow-sm transition-transform duration-300 ease-in-out z-40`}
+        } md:translate-x-0 fixed md:relative w-56 h-screen flex flex-col flex-shrink-0 shadow-xl transition-transform duration-300 ease-in-out z-40`}
         style={{ background: 'var(--bg-surface)', borderRight: '1px solid var(--border)' }}
       >
         {/* Logo */}
@@ -69,7 +69,7 @@ export function Navbar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto min-h-0">
           {navigation.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -90,8 +90,8 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* Wallet Connect */}
-        <div className="p-4 flex-shrink-0" style={{ borderTop: '1px solid var(--border)' }}>
+        {/* Wallet Connect - Always visible at bottom */}
+        <div className="p-4 flex-shrink-0 mt-auto" style={{ borderTop: '1px solid var(--border)' }}>
           <ConnectButton showBalance={false} chainStatus="icon" />
         </div>
       </aside>
