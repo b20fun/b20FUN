@@ -5,7 +5,7 @@ export function SocialLinks() {
     <div className="fixed bottom-6 right-6 flex flex-row gap-3 z-50">
       {/* X (Twitter) */}
       <a
-        href="https://x.com/agrosfi"
+        href="https://x.com/agros_fi"
         target="_blank"
         rel="noopener noreferrer"
         className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-110"
