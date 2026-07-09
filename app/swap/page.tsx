@@ -110,8 +110,6 @@ function humanizeError(raw: string): string {
   return "An error occurred, please try again.";
 }
 
-// Base Mainnet için güvenilir token'lar
-const DEFAULT_TOKENS: Token[] = [
 function TokenModal({ onSelect, onClose, exclude }: { onSelect: (t: Token) => void; onClose: () => void; exclude: Token }) {
   const publicClient = usePublicClient();
   const [search, setSearch] = useState('');
@@ -337,16 +335,9 @@ export default function SwapPage() {
     if (!publicClient || !amountInWei || !tokenOut.address) return;
     setStep("quoting");
     
-    console.log('Fetching quote:', {
-      tokenInRaw: tokenIn.address,
-      tokenOutRaw: tokenOut.address,
-      amountIn: amountInWei.toString()
-    });
-    
     try {
       // RAW adresleri gönder (NATIVE_ETH olabilir), getBestQuote içinde wrap detection yapılacak
       const result = await getBestQuote(publicClient, tokenIn.address, tokenOut.address, amountInWei);
-      console.log('Quote result:', result);
       setQuoteResult(result);
       if (!result.best) {
         const errMsg = "No liquidity found in any DEX for this pair. A liquidity pool must be created first.";
@@ -356,7 +347,6 @@ export default function SwapPage() {
         setStep("idle");
       }
     } catch (err) {
-      console.error('Quote error:', err);
       const errMsg = err instanceof Error ? err.message : "Failed to get quote";
       showError(errMsg);
       setStep("error");
@@ -421,14 +411,6 @@ export default function SwapPage() {
     if (!quoteResult?.best || !amountInWei || !address) return;
     setStep("swapping");
     
-    console.log('handleSwap called:', {
-      best: quoteResult.best,
-      tokenInAddr: tokenIn.address,
-      tokenOutAddr: tokenOut.address,
-      amountIn: amountInWei.toString(),
-      minAmountOut: minAmountOut.toString()
-    });
-    
     try {
       const hash = await executeSwap({
         writeContractAsync,
@@ -440,8 +422,6 @@ export default function SwapPage() {
         userAddress: address,
         dataSuffix: DATA_SUFFIX,
       });
-
-      console.log('Swap transaction sent:', hash);
       
       // Save to history immediately (pending status)
       const historyRecord = {
@@ -462,17 +442,13 @@ export default function SwapPage() {
         chain_id: 8453,
       };
       
-      console.log('Saving to swap_history:', historyRecord);
-      
       // Save to Supabase
       const { data: insertData, error: insertError } = await supabase
         .from('swap_history')
         .insert(historyRecord);
       
       if (insertError) {
-        console.error('❌ Failed to save swap history:', insertError);
-      } else {
-        console.log('✅ Swap history saved successfully:', insertData);
+        console.error('Failed to save swap history:', insertError);
       }
       
       await publicClient?.waitForTransactionReceipt({ hash });
@@ -484,9 +460,7 @@ export default function SwapPage() {
         .eq('tx_hash', hash);
       
       if (updateError) {
-        console.error('❌ Failed to update swap history:', updateError);
-      } else {
-        console.log('✅ Swap history updated to completed');
+        console.error('Failed to update swap history:', updateError);
       }
       
       // Swap başarılı, bakiyeleri hemen güncelle
@@ -502,7 +476,6 @@ export default function SwapPage() {
       setQuoteResult(null);
       // Don't reset amountIn - allow user to swap same amount again
     } catch (err) {
-      console.error('Swap error:', err);
       const errorMessage = err instanceof Error ? humanizeError(err.message) : "Swap transaction failed";
       showError(errorMessage);
       setStep("error");

@@ -11,6 +11,7 @@
 
 import { type Address, encodeFunctionData } from "viem";
 import type { WriteContractMutateAsync } from "wagmi/query";
+import type { Config } from 'wagmi';
 import {
   swapRouter02Abi,
   aerodromeRouterAbi,
@@ -18,8 +19,6 @@ import {
   NATIVE_ETH,
 } from "./abis";
 import type { DexQuote } from "./getBestQuote";
-import type { Config } from 'wagmi';
-import type { WriteContractMutateAsync } from 'wagmi/query';
 
 type ExecuteSwapArgs = {
   writeContractAsync: WriteContractMutateAsync<Config, unknown>;
@@ -50,22 +49,11 @@ export async function executeSwap({
 
   // ---------------- WETH WRAP/UNWRAP ----------------
   // ETH → WETH or WETH → ETH: Use WETH contract directly
-  console.log('executeSwap called:', {
-    dex: best.dex,
-    isEthIn,
-    isEthOut,
-    tokenIn,
-    tokenOut,
-    amountIn: amountIn.toString(),
-    wethAddr: CONTRACTS.weth
-  });
-  
   if (best.dex === "weth-wrap") {
     const wethAddr = CONTRACTS.weth as Address;
     
     // ETH → WETH: deposit()
     if (isEthIn) {
-      console.log('Executing ETH → WETH wrap via deposit()', { wethAddr, value: amountIn.toString() });
       return writeContractAsync({
         address: wethAddr,
         abi: [
@@ -85,7 +73,6 @@ export async function executeSwap({
     
     // WETH → ETH: withdraw()
     if (isEthOut) {
-      console.log('Executing WETH → ETH unwrap via withdraw()', { wethAddr, amount: amountIn.toString() });
       return writeContractAsync({
         address: wethAddr,
         abi: [
@@ -103,7 +90,6 @@ export async function executeSwap({
       });
     }
     
-    console.error('WETH wrap/unwrap: Neither isEthIn nor isEthOut is true!', { isEthIn, isEthOut, tokenIn, tokenOut });
     throw new Error('WETH wrap/unwrap logic error');
   }
 

@@ -134,17 +134,8 @@ export async function getBestQuote(
   const isETHtoWETH = tokenIn === NATIVE_ETH && tokenOut.toLowerCase() === wethAddr.toLowerCase();
   const isWETHtoETH = tokenIn.toLowerCase() === wethAddr.toLowerCase() && tokenOut === NATIVE_ETH;
   
-  console.log('getBestQuote check:', {
-    tokenIn,
-    tokenOut,
-    wethAddr,
-    isETHtoWETH,
-    isWETHtoETH
-  });
-  
   if (isETHtoWETH || isWETHtoETH) {
     // 1:1 wrap/unwrap - likidite havuzu gereksiz
-    console.log('WETH wrap/unwrap detected - returning 1:1 quote');
     return {
       best: { dex: "weth-wrap", amountOut: amountIn }, // 1:1 oran
       all: [{ dex: "weth-wrap", amountOut: amountIn }],

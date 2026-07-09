@@ -7,12 +7,13 @@ import { erc20Abi } from '@/lib/swap/abis';
 
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 const POPULAR_TOKENS = [
-  { symbol: 'WETH', address: '0x4200000000000000000000000000000000000006' as Address, decimals: 18, logo: 'https://assets.coingecko.com/coins/images/2518/small/weth.png' },
-  { symbol: 'USDC', address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' as Address, decimals: 6, logo: 'https://assets.coingecko.com/coins/images/6319/small/usdc.png' },
-  { symbol: 'DAI', address: '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb' as Address, decimals: 18, logo: 'https://assets.coingecko.com/coins/images/9956/small/dai-multi-collateral-mcd.png' },
+  { symbol: 'WETH', address: '0x4200000000000000000000000000000000000006' as Address, decimals: 18, logoURI: 'https://assets.coingecko.com/coins/images/2518/small/weth.png' },
+  { symbol: 'USDC', address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913' as Address, decimals: 6, logoURI: 'https://assets.coingecko.com/coins/images/6319/small/usdc.png' },
+  { symbol: 'DAI', address: '0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb' as Address, decimals: 18, logoURI: 'https://assets.coingecko.com/coins/images/9956/small/dai-multi-collateral-mcd.png' },
 ];
 
 interface TokenBalance {
+  id?: string;
   symbol: string;
   name: string;
   address: Address;
@@ -20,6 +21,8 @@ interface TokenBalance {
   emoji: string;
   logoURI?: string;
   balance: string;
+  created_at?: string;
+  variant?: string;
 }
 
 export default function PortfolioPage() {
@@ -48,7 +51,7 @@ export default function PortfolioPage() {
         Promise.all(POPULAR_TOKENS.map(async t => {
           try {
             const bal = await publicClient.readContract({ address: t.address, abi: erc20Abi, functionName: 'balanceOf', args: [address] });
-            return { ...t, balance: formatUnits(bal as bigint, t.decimals) };
+            return { ...t, name: t.symbol, emoji: '🪙', balance: formatUnits(bal as bigint, t.decimals) } as TokenBalance;
           } catch { return null; }
         })).then(r => setTokens(r.filter((item): item is TokenBalance => item !== null)))
       ]).finally(() => setLoading(false));
@@ -169,7 +172,7 @@ export default function PortfolioPage() {
                   <div key={t.address} className="space-y-1.5">
                     <div className="flex items-start justify-between">
                       <div className="flex items-start gap-2">
-                        <img src={t.logo} alt={t.symbol} className="w-8 h-8 rounded-full" onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" fill="%2393C5FD"/><text x="50%" y="50%" font-size="14" fill="white" text-anchor="middle" dy=".3em">?</text></svg>'; }} />
+                        <img src={t.logoURI} alt={t.symbol} className="w-8 h-8 rounded-full" onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" fill="%2393C5FD"/><text x="50%" y="50%" font-size="14" fill="white" text-anchor="middle" dy=".3em">?</text></svg>'; }} />
                         <div>
                           <div className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{t.symbol} <span className="text-xs font-normal" style={{ color: 'var(--text-secondary)' }}>{t.symbol === 'WETH' ? 'Wrapped Ether' : t.symbol === 'USDC' ? 'USD Coin' : 'Dai Stablecoin'}</span></div>
                           <div className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>{Number(t.balance).toFixed(4)} {t.symbol}</div>
@@ -255,7 +258,7 @@ export default function PortfolioPage() {
           <div className="flex gap-2 justify-center mt-3"><a href="/swap" className="px-4 py-2 rounded-lg text-sm font-semibold text-white" style={{ background: 'var(--ice-primary)' }}>Swap</a></div></div>
         ) : (
           <div className="space-y-2">{b20Tokens.map((t: TokenBalance) => (
-            <div key={t.id} className="rounded-lg p-3" style={{ background: 'var(--bg-base)', border: '1px solid var(--border)' }}>
+            <div key={t.id || t.address} className="rounded-lg p-3" style={{ background: 'var(--bg-base)', border: '1px solid var(--border)' }}>
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2"><div className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-white text-xs" style={{ background: 'var(--ice-primary)' }}>{t.symbol.slice(0,3)}</div>
                 <div><div className="flex items-center gap-1.5 mb-0.5"><span className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{t.name}</span>
@@ -266,7 +269,7 @@ export default function PortfolioPage() {
                 <div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>{t.symbol}</div></div>
               </div>
               <div className="flex items-center justify-between pt-2" style={{ borderTop: '1px solid var(--border)' }}>
-                <span className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>{timeAgo(t.created_at)}</span>
+                <span className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>{t.created_at ? timeAgo(t.created_at) : 'N/A'}</span>
                 <a href={`https://basescan.org/address/${t.address}`} target="_blank" rel="noopener noreferrer" className="text-[10px] font-medium hover:underline" style={{ color: 'var(--ice-primary)' }}>BaseScan →</a>
               </div>
             </div>
@@ -280,13 +283,13 @@ export default function PortfolioPage() {
           <p className="font-semibold text-sm mb-1" style={{ color: 'var(--text-primary)' }}>No tokens created</p></div>
         ) : (
           <div className="space-y-2">{createdTokens.map((t: TokenBalance) => (
-            <div key={t.id} className="rounded-lg p-3" style={{ background: 'var(--bg-base)', border: '1px solid var(--border)' }}>
+            <div key={t.id || t.address} className="rounded-lg p-3" style={{ background: 'var(--bg-base)', border: '1px solid var(--border)' }}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2"><div className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-white text-[10px]" style={{ background: 'var(--ice-deep)' }}>{t.symbol.slice(0,3)}</div>
                 <div><div className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{t.name} <span className="text-[10px] px-1.5 py-0.5 rounded-full ml-1" style={{ background: 'var(--ice-pale)', color: 'var(--ice-deep)' }}>{t.symbol}</span></div>
                 <div className="text-[10px] font-mono" style={{ color: 'var(--text-secondary)' }}>{shortAddr(t.address)}</div></div></div>
-                <div className="text-right"><div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>{timeAgo(t.created_at)}</div>
-                <div className="text-[10px] px-1.5 py-0.5 rounded-full mt-1" style={{ background: 'var(--ice-pale)', color: 'var(--ice-deep)' }}>{t.variant}</div></div>
+                <div className="text-right"><div className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>{t.created_at ? timeAgo(t.created_at) : 'N/A'}</div>
+                <div className="text-[10px] px-1.5 py-0.5 rounded-full mt-1" style={{ background: 'var(--ice-pale)', color: 'var(--ice-deep)' }}>{t.variant || 'ASSET'}</div></div>
               </div>
             </div>
           ))}</div>
