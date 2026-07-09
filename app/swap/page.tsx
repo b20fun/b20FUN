@@ -608,30 +608,18 @@ export default function SwapPage() {
           </div>
 
           {/* Switch Button */}
-          <div className="flex justify-center -my-3 relative z-10">
+          <div className="flex justify-center -my-2 relative z-10">
             <button 
               onClick={switchTokens} 
-              className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-110"
+              className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-all"
               style={{ 
                 background: 'var(--bg-surface)', 
-                border: '2px solid var(--ice-primary)', 
-                color: 'var(--ice-primary)' 
+                border: '2px solid var(--border)', 
+                color: 'var(--text-secondary)',
+                fontSize: '20px'
               }}
             >
-              <svg 
-                width="24" 
-                height="24" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2.5" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-              >
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <polyline points="19 12 12 19 5 12" />
-                <polyline points="5 12 12 5 19 12" />
-              </svg>
+              ⇅
             </button>
           </div>
 
