@@ -44,8 +44,13 @@ export function Navbar() {
       <aside 
         className={`${
           isMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 fixed md:relative w-56 h-screen flex flex-col flex-shrink-0 shadow-xl transition-transform duration-300 ease-in-out z-40`}
-        style={{ background: 'var(--bg-surface)', borderRight: '1px solid var(--border)' }}
+        } md:translate-x-0 fixed md:relative w-56 flex flex-col flex-shrink-0 shadow-xl transition-transform duration-300 ease-in-out z-40`}
+        style={{ 
+          background: 'var(--bg-surface)', 
+          borderRight: '1px solid var(--border)',
+          height: '100vh',
+          maxHeight: '100vh'
+        }}
       >
         {/* Logo */}
         <div className="p-5 flex-shrink-0" style={{ borderBottom: '1px solid var(--border)' }}>
@@ -69,7 +74,7 @@ export function Navbar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto min-h-0">
+        <nav className="flex-1 p-3 space-y-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
           {navigation.map((item) => {
             const isActive = pathname === item.href;
             return (
@@ -77,7 +82,7 @@ export function Navbar() {
                 key={item.name}
                 href={item.href}
                 onClick={() => setIsMenuOpen(false)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${isActive ? 'ice-glow' : 'hover:opacity-80'}`}
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive ? 'ice-glow' : 'hover:opacity-80'}`}
                 style={{
                   background: isActive ? 'var(--ice-primary)' : 'transparent',
                   color: isActive ? '#FFFFFF' : 'var(--text-primary)',
@@ -91,7 +96,7 @@ export function Navbar() {
         </nav>
 
         {/* Wallet Connect - Always visible at bottom */}
-        <div className="p-4 flex-shrink-0 mt-auto" style={{ borderTop: '1px solid var(--border)' }}>
+        <div className="p-3 flex-shrink-0" style={{ borderTop: '1px solid var(--border)' }}>
           <ConnectButton showBalance={false} chainStatus="icon" />
         </div>
       </aside>
