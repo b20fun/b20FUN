@@ -30,27 +30,40 @@ export default function HistoryPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [lastFetch, setLastFetch] = useState<Date>(new Date());
   const itemsPerPage = 5;
 
   useEffect(() => {
     if (!address || !isConnected) return;
     
-    setLoading(true);
-    // Fetch transactions from Supabase
-    supabase
-      .from('swap_history')
-      .select('*')
-      .eq('user_address', address.toLowerCase())
-      .order('timestamp', { ascending: false })
-      .then(({ data, error }) => {
-        if (error) {
-          console.error('Error fetching transactions:', error);
-          setTransactions([]);
-        } else {
-          setTransactions(data || []);
-        }
-        setLoading(false);
-      });
+    const fetchTransactions = () => {
+      setLoading(true);
+      // Fetch transactions from Supabase
+      supabase
+        .from('swap_history')
+        .select('*')
+        .eq('user_address', address.toLowerCase())
+        .order('timestamp', { ascending: false })
+        .then(({ data, error }) => {
+          if (error) {
+            console.error('Error fetching transactions:', error);
+            setTransactions([]);
+          } else {
+            setTransactions(data || []);
+            setLastFetch(new Date());
+          }
+          setLoading(false);
+        });
+    };
+
+    // Initial fetch
+    fetchTransactions();
+
+    // Polling: Refresh every 3 seconds
+    const interval = setInterval(fetchTransactions, 3000);
+
+    // Cleanup
+    return () => clearInterval(interval);
   }, [address, isConnected]);
 
   if (!isConnected) {
@@ -115,12 +128,60 @@ export default function HistoryPage() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-            📜 Transaction History
-          </h1>
-          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-            Your complete swap transaction history on B20 FUN
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+                📜 Transaction History
+              </h1>
+              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                Your complete swap transaction history on B20 FUN
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                if (!loading && address) {
+                  setLoading(true);
+                  supabase
+                    .from('swap_history')
+                    .select('*')
+                    .eq('user_address', address.toLowerCase())
+                    .order('timestamp', { ascending: false })
+                    .then(({ data, error }) => {
+                      if (!error) {
+                        setTransactions(data || []);
+                        setLastFetch(new Date());
+                      }
+                      setLoading(false);
+                    });
+                }
+              }}
+              disabled={loading}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+              style={{
+                background: loading ? 'var(--bg-base)' : 'var(--ice-pale)',
+                color: 'var(--ice-primary)',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.5 : 1,
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={loading ? 'animate-spin' : ''}
+              >
+                <polyline points="23 4 23 10 17 10" />
+                <polyline points="1 20 1 14 7 14" />
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+              </svg>
+              Refresh
+            </button>
+          </div>
         </div>
 
         {/* Tabs */}
