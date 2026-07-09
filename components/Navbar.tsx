@@ -18,40 +18,37 @@ export function Navbar() {
 
   return (
     <>
-      {/* Mobile: Hamburger Button */}
+      {/* Mobile: Toggle Button (Hamburger/Close) */}
       <button
-        onClick={() => setIsMenuOpen(true)}
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
         className="md:hidden fixed top-4 right-4 z-50 w-10 h-10 rounded-lg flex items-center justify-center shadow-lg"
         style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <line x1="3" y1="12" x2="21" y2="12" />
-          <line x1="3" y1="6" x2="21" y2="6" />
-          <line x1="3" y1="18" x2="21" y2="18" />
-        </svg>
+        {isMenuOpen ? (
+          // Close icon (X)
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        ) : (
+          // Hamburger icon (≡)
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        )}
       </button>
 
       {/* Sidebar */}
       <aside 
         className={`${
           isMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 fixed md:relative w-56 h-screen flex flex-col flex-shrink-0 shadow-sm transition-transform duration-300 ease-in-out z-50`}
+        } md:translate-x-0 fixed md:relative w-56 h-screen flex flex-col flex-shrink-0 shadow-sm transition-transform duration-300 ease-in-out z-40`}
         style={{ background: 'var(--bg-surface)', borderRight: '1px solid var(--border)' }}
       >
         {/* Logo */}
-        <div className="p-5 flex-shrink-0 relative" style={{ borderBottom: '1px solid var(--border)' }}>
-          {/* Close button (mobile only) - Cirpay style */}
-          <button
-            onClick={() => setIsMenuOpen(false)}
-            className="md:hidden absolute top-4 right-4 w-10 h-10 rounded-lg flex items-center justify-center shadow-md"
-            style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-
+        <div className="p-5 flex-shrink-0" style={{ borderBottom: '1px solid var(--border)' }}>
           <Link href="/" className="flex items-center gap-3" onClick={() => setIsMenuOpen(false)}>
             <div 
               className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden flex-shrink-0"
