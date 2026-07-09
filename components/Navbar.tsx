@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const navigation = [
-  { name: '🔄 Swap', href: '/swap' },
+  { name: '🔄 B20 Swap', href: '/swap' },
   { name: '📊 Explore', href: '/explore' },
   { name: '📈 Portfolio', href: '/portfolio' },
   { name: '📜 History', href: '/history' },
