@@ -1,8 +1,15 @@
 'use client';
 
+import { useState } from 'react';
+import { DocumentationModal } from './DocumentationModal';
+
 export function SocialLinks() {
+  const [showDocs, setShowDocs] = useState(false);
+
   return (
-    <div className="fixed bottom-6 right-6 flex flex-row gap-3 z-50">
+    <>
+      <DocumentationModal isOpen={showDocs} onClose={() => setShowDocs(false)} />
+      <div className="fixed bottom-6 right-6 flex flex-row gap-3 z-50">
       {/* X (Twitter) */}
       <a
         href="https://x.com/agros_fi"
@@ -44,13 +51,11 @@ export function SocialLinks() {
       </a>
 
       {/* Documentation */}
-      <a
-        href="https://docs.base.org/base-chain/specs/upgrades/beryl/b20"
-        target="_blank"
-        rel="noopener noreferrer"
+      <button
+        onClick={() => setShowDocs(true)}
         className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-110"
         style={{ background: 'var(--bg-surface)', border: '2px solid var(--border)' }}
-        title="B20 Documentation"
+        title="Documentation"
       >
         <svg
           width="20"
@@ -66,7 +71,8 @@ export function SocialLinks() {
           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
           <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
         </svg>
-      </a>
+      </button>
     </div>
+    </>
   );
 }
