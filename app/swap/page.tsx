@@ -608,7 +608,7 @@ export default function SwapPage() {
           </div>
 
           {/* Switch Button */}
-          <div className="flex justify-center my-3 relative z-10">
+          <div className="flex justify-center relative z-10">
             <button 
               onClick={switchTokens} 
               className="w-10 h-10 rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-all"
@@ -624,7 +624,7 @@ export default function SwapPage() {
           </div>
 
           {/* You Receive */}
-          <div className="rounded-xl p-4 mb-4" style={{ background: 'var(--bg-base)', border: '1px solid var(--border)' }}>
+          <div className="rounded-xl p-4 mb-6" style={{ background: 'var(--bg-base)', border: '1px solid var(--border)' }}>
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>You receive</span>
               <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>Balance: <span className="font-semibold tabular-nums" style={{ color: 'var(--text-primary)' }}>{parseFloat(balanceOut).toFixed(6)}</span></span>
