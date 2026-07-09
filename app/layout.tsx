@@ -31,9 +31,9 @@ export default function RootLayout({
         <Providers>
           <ToastProvider>
             <NetworkGuard>
-              <div className="flex h-screen overflow-hidden" style={{ background: 'var(--bg-base)' }}>
+              <div className="flex flex-col md:flex-row h-screen overflow-hidden" style={{ background: 'var(--bg-base)' }}>
                 <Navbar />
-                <main className="flex-1 overflow-y-auto pt-[120px] md:pt-0" style={{ background: 'var(--bg-base)' }}>
+                <main className="flex-1 overflow-y-auto" style={{ background: 'var(--bg-base)' }}>
                   {children}
                 </main>
               </div>
