@@ -25,7 +25,7 @@ export function SocialLinks() {
 
       {/* GitHub */}
       <a
-        href="https://github.com/agrosfi/agrosfi"
+        href="https://github.com/b20fun/b20FUN"
         target="_blank"
         rel="noopener noreferrer"
         className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-110"
