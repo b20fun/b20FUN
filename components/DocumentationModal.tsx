@@ -26,7 +26,7 @@ export function DocumentationModal({ isOpen, onClose }: DocumentationModalProps)
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.7)' }}>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.7)' }}>
       <div 
         className="rounded-2xl w-full max-w-6xl mx-4 overflow-hidden shadow-2xl flex"
         style={{ 
